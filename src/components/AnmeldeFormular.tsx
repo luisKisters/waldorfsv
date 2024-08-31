@@ -1,6 +1,8 @@
 'use client'
 
 import { baseUrl } from '@/app/utils'
+import { v4 as uuidv4 } from 'uuid'
+import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 
 interface AnmeldeFormularProps {
@@ -22,6 +24,7 @@ const AnmeldeFormular: React.FC<AnmeldeFormularProps> = ({ eventId }) => {
     furtherDietaryPreferences: '',
   })
   const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
@@ -37,7 +40,7 @@ const AnmeldeFormular: React.FC<AnmeldeFormularProps> = ({ eventId }) => {
       console.log(
         JSON.stringify({
           ...formData,
-          event: 1,
+          event: eventId,
           checkedIn: false,
         }),
       )
@@ -51,6 +54,7 @@ const AnmeldeFormular: React.FC<AnmeldeFormularProps> = ({ eventId }) => {
         body: JSON.stringify({
           ...formData,
           event: eventId,
+          ticketNumber: uuidv4(),
           checkedIn: false,
         }),
       })
@@ -63,6 +67,7 @@ const AnmeldeFormular: React.FC<AnmeldeFormularProps> = ({ eventId }) => {
       console.log(data)
       //   console.log(data)
       console.log('response', response)
+      router.push(`/ticket/${data.doc.ticketNumber}`)
     } catch (error) {
       console.log(error)
       throw new Error('Error submitting form: ' + error)

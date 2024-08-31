@@ -21,24 +21,23 @@
     "@payloadcms/richtext-lexical": "beta",
     "@radix-ui/react-select": "^2.1.1",
     "@radix-ui/react-slot": "^1.1.0",
+    "@yudiel/react-qr-scanner": "^2.0.8",
     "autoprefixer": "^10.4.20",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cross-env": "^7.0.3",
-    "file-uri-to-path": "^2.0.0",
     "graphql": "^16.8.1",
-    "libpq": "^1.8.13",
     "lucide-react": "^0.436.0",
     "next": "15.0.0-canary.104",
     "payload": "beta",
-    "pg-native": "^3.1.0",
     "qrcode.react": "^4.0.1",
     "react": "19.0.0-rc-06d0b89e-20240801",
     "react-dom": "19.0.0-rc-06d0b89e-20240801",
     "sharp": "0.32.6",
     "tailwind-merge": "^2.5.2",
     "tailwindcss": "^3.4.10",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.14.9",
@@ -46,6 +45,7 @@
     "@types/react-dom": "npm:types-react-dom@19.0.0-rc.0",
     "eslint": "^8",
     "eslint-config-next": "15.0.0-canary.104",
+    "qs": "^6.13.0",
     "typescript": "5.5.4"
   },
   "engines": {

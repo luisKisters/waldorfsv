@@ -17,11 +17,13 @@ export const Events: CollectionConfig = {
           pickerAppearance: 'dayAndTime',
         },
       },
+      localized: true,
     },
     {
       name: 'endDate',
       type: 'date',
       required: true,
+      localized: true,
     },
     {
       name: 'location',

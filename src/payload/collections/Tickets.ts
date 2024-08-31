@@ -35,6 +35,11 @@ export const Tickets: CollectionConfig = {
       required: true,
     },
     {
+      name: 'ticketNumber',
+      type: 'text',
+      required: true,
+    },
+    {
       name: 'checkedIn',
       type: 'checkbox',
       defaultValue: false,

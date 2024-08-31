@@ -1,19 +1,8 @@
 'use server'
 
-// import React, { useEffect, useState } from 'react'
-// import { notFound } from 'next/navigation'
-// import AnmeldeFormular from '@/components/AnmeldeFormular'
-import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { Button } from '@/components/ui/button'
-import { payload } from '@/lib/utils'
 import AnmeldeFormular from '@/components/AnmeldeFormular'
+import { payload } from '@/lib/utils'
+import { notFound } from 'next/navigation'
 
 export default async function AnmeldenPage({ params }: { params: { slug: string } }) {
   const response = await payload.find({
@@ -25,10 +14,7 @@ export default async function AnmeldenPage({ params }: { params: { slug: string 
     },
   })
   const event = response.docs[0]
-
-  console.log('params', params)
-  console.log('response', response)
-  console.log('event (from page)', event)
+  !event && notFound()
 
   //   useEffect(() => {
   //     const fetchEvent = async () => {

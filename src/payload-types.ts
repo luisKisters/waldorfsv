@@ -135,6 +135,7 @@ export interface Ticket {
   dietaryPreferences?: ('vegan' | 'vegetarian') | null;
   furtherDietaryPreferences?: string | null;
   event: number | Event;
+  ticketNumber: string;
   checkedIn: boolean;
   updatedAt: string;
   createdAt: string;
