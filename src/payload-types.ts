@@ -133,6 +133,7 @@ export interface Ticket {
   email: string;
   school: string;
   dietaryPreferences?: ('vegan' | 'vegetarian') | null;
+  furtherDietaryPreferences?: string | null;
   event: number | Event;
   checkedIn: boolean;
   updatedAt: string;

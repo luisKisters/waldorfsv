@@ -24,6 +24,11 @@ export const Tickets: CollectionConfig = {
       options: ['vegan', 'vegetarian'],
     },
     {
+      name: 'furtherDietaryPreferences',
+      type: 'textarea',
+      required: false,
+    },
+    {
       name: 'event',
       type: 'relationship',
       relationTo: 'events',

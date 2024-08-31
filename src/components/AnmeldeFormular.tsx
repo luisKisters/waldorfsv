@@ -1,10 +1,7 @@
 'use client'
 
+import { baseUrl } from '@/app/utils'
 import React, { useState } from 'react'
-import { getPayloadHMR } from '@payloadcms/next/utilities'
-import config from '@payload-config'
-
-const payload = await getPayloadHMR({ config })
 
 interface AnmeldeFormularProps {
   eventId: number
@@ -15,15 +12,20 @@ const AnmeldeFormular: React.FC<AnmeldeFormularProps> = ({ eventId }) => {
     name: string
     email: string
     school: string
-    dietaryPreferences: 'vegan' | 'vegetarian' | null // Update type
+    dietaryPreferences: 'vegan' | 'vegetarian' | null
+    furtherDietaryPreferences: string
   }>({
     name: '',
     email: '',
     school: '',
-    dietaryPreferences: null, // Initialize as null
+    dietaryPreferences: null,
+    furtherDietaryPreferences: '',
   })
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
@@ -31,121 +33,94 @@ const AnmeldeFormular: React.FC<AnmeldeFormularProps> = ({ eventId }) => {
     e.preventDefault()
 
     try {
-      await payload.create({
-        collection: 'tickets',
-        data: {
+      setIsLoading(true)
+      console.log(
+        JSON.stringify({
+          ...formData,
+          event: 1,
+          checkedIn: false,
+        }),
+      )
+      console.log('event', eventId)
+      const response = await fetch(`${baseUrl}/api/tickets`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           ...formData,
           event: eventId,
           checkedIn: false,
-          dietaryPreferences: formData.dietaryPreferences, // No need for null check
-        },
+        }),
       })
-      alert('Anmeldung erfolgreich!')
-      setFormData({
-        name: '',
-        email: '',
-        school: '',
-        dietaryPreferences: null, // Ensure it defaults to null
-      })
+
+      if (!response.ok) {
+        throw new Error('Error submitting form: ' + response.statusText)
+      }
+
+      const data = await response.json()
+      console.log(data)
+      //   console.log(data)
+      console.log('response', response)
     } catch (error) {
-      console.error('Fehler bei der Anmeldung:', error)
-      alert('Es gab einen Fehler bei der Anmeldung. Bitte versuchen Sie es erneut.')
+      console.log(error)
+      throw new Error('Error submitting form: ' + error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
-  //   return (
-  //     <form onSubmit={handleSubmit} className="space-y-4">
-  //       <div>
-  //         <label htmlFor="name" className="block mb-1">
-  //           Name
-  //         </label>
-  //         <input
-  //           type="text"
-  //           id="name"
-  //           name="name"
-  //           value={formData.name}
-  //           onChange={handleChange}
-  //           required
-  //           className="w-full px-3 py-2 border rounded"
-  //         />
-  //       </div>
-  //       <div>
-  //         <label htmlFor="email" className="block mb-1">
-  //           E-Mail
-  //         </label>
-  //         <input
-  //           type="email"
-  //           id="email"
-  //           name="email"
-  //           value={formData.email}
-  //           onChange={handleChange}
-  //           required
-  //           className="w-full px-3 py-2 border rounded"
-  //         />
-  //       </div>
-  //       <div>
-  //         <label htmlFor="school" className="block mb-1">
-  //           Schule
-  //         </label>
-  //         <input
-  //           type="text"
-  //           id="school"
-  //           name="school"
-  //           value={formData.school}
-  //           onChange={handleChange}
-  //           required
-  //           className="w-full px-3 py-2 border rounded"
-  //         />
-  //       </div>
-  //       <div>
-  //         <label htmlFor="dietaryPreferences" className="block mb-1">
-  //           Ernährungsvorlieben
-  //         </label>
-  //         <select
-  //           id="dietaryPreferences"
-  //           name="dietaryPreferences"
-  //           value={formData.dietaryPreferences || ''} // Ensure it defaults to an empty string
-  //           onChange={handleChange}
-  //           className="w-full px-3 py-2 border rounded"
-  //         >
-  //           <option value="">Keine besonderen Vorlieben</option>
-  //           <option value="vegan">Vegan</option>
-  //           <option value="vegetarian">Vegetarisch</option>
-  //         </select>
-  //       </div>
-  //       <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-  //         Anmelden
-  //       </button>
-  //     </form>
-  //   )
   return (
     <div>
-      <p>Anmeldeformular</p>
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="Name"
+            required
+          />
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Email"
+            required
+          />
+          <input
+            type="text"
+            name="school"
+            value={formData.school}
+            onChange={handleChange}
+            placeholder="Schule"
+            required
+          />
+          <select
+            name="dietaryPreferences"
+            value={formData.dietaryPreferences || ''}
+            onChange={handleChange}
+          >
+            <option value="">Wähle eine Ernährungsart</option>
+            <option value="vegan">Vegan</option>
+            <option value="vegetarian">Vegetarisch</option>
+          </select>
+          <textarea
+            name="furtherDietaryPreferences"
+            value={formData.furtherDietaryPreferences}
+            onChange={handleChange}
+            placeholder="Weitere Ernährungsdetails"
+          />
+          <button type="submit">Anmelden</button>
+        </form>
+      )}
     </div>
   )
 }
 
 export default AnmeldeFormular
-
-// import React from 'react'
-// import { getPayloadHMR } from '@payloadcms/next/utilities'
-// import config from '@payload-config'
-
-// const payload = await getPayloadHMR({ config })
-
-// const events = await payload.find({
-//   collection: 'events',
-// })
-
-// export default function AnmeldeFormular() {
-//   return (
-//     <div>
-//       {events.docs.map((event) => (
-//         <div key={event.id}>
-//           <h1>{event.title}</h1>
-//           {/* <p>{event.description}</p> */}
-//         </div>
-//       ))}
-//     </div>
-//   )
-// }
